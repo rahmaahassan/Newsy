@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutternews/helper/data.dart';
 import 'package:flutternews/helper/news.dart';
 import 'package:flutternews/models/category_model.dart';
+import 'package:flutternews/views/category_news.dart';
+
+import 'article_view.dart';
 
 
 class Home extends StatefulWidget {
@@ -43,33 +46,50 @@ class _HomeState extends State<Home> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('World'),
+            Text('World', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),),
             Text('News', style: TextStyle(
-              color: Colors.blue,
+              color: Colors.blue, fontWeight: FontWeight.w600
             ),)
           ],
         ),
+        backgroundColor: Colors.transparent,
         elevation: 0.0,
       ),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: ListView.builder(
-                itemCount: categories.length,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index){
-                    return CategoryTile(
-                      imageUrl: categories[index].imageUrl,
-                      categoryName: categories[index].categoryName,
-                    );
-                  },
-              ),
-            )
-          ],
-        ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            height: 70,
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: ListView.builder(
+              itemCount: categories.length,
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index){
+                  return CategoryTile(
+                    imageUrl: categories[index].imageUrl,
+                    categoryName: categories[index].categoryName,
+                  );
+                },
+            ),
+          ),
+          Container(
+            height: 610,
+            margin: EdgeInsets.only(top: 16),
+            child: ListView.builder(
+                itemCount: newslist.length,
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return NewsTile(
+                    imgUrl: newslist[index].urlToImage ?? "",
+                    title: newslist[index].title ?? "",
+                    desc: newslist[index].description ?? "",
+                    content: newslist[index].content ?? "",
+                    posturl: newslist[index].articleUrl ?? "",
+                  );
+                }),
+          )
+        ],
       ),
     );
   }
@@ -85,7 +105,11 @@ class CategoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => CategoryNews(
+              newsCategory: categoryName.toLowerCase(),
+            )
+        ));
       },
       child: Container(
         margin: EdgeInsets.only(right: 16),
@@ -98,9 +122,9 @@ class CategoryTile extends StatelessWidget {
               alignment: Alignment.center,
               width: 120, height: 60,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6)
+                  color: Colors.black26,
+                  borderRadius: BorderRadius.circular(6)
               ),
-              color: Colors.black26,
               child: Text(categoryName, style: TextStyle(
                 color: Colors.white,
                 fontSize: 14,
@@ -133,4 +157,74 @@ class BlogTile extends StatelessWidget {
   }
 }
 
+class NewsTile extends StatelessWidget {
+  final String imgUrl, title, desc, content, posturl;
 
+  NewsTile(
+      {this.imgUrl, this.desc, this.title, this.content, @required this.posturl});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) =>
+                ArticleView(
+                  postUrl: posturl,
+                )
+        ));
+      },
+      child: Container(
+          margin: EdgeInsets.only(bottom: 24),
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
+          child: Container(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              alignment: Alignment.bottomCenter,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      bottomRight: Radius.circular(6),
+                      bottomLeft: Radius.circular(6))
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: Image.network(
+                        imgUrl,
+                        height: 200,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width,
+                        fit: BoxFit.cover,
+                      )),
+                  SizedBox(height: 12,),
+                  Text(
+                    title,
+                    maxLines: 2,
+                    style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    desc,
+                    maxLines: 2,
+                    style: TextStyle(color: Colors.black54, fontSize: 14),
+                  )
+                ],
+              ),
+            ),
+          )),
+    );
+  }
+}
