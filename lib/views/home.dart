@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutternews/helper/data.dart';
 import 'package:flutternews/helper/news.dart';
+import 'package:flutternews/helper/widgets.dart';
 import 'package:flutternews/models/category_model.dart';
 import 'package:flutternews/widgets/category_tile.dart';
-import 'package:flutternews/widgets/blog_tile.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -14,7 +14,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   bool _loading = true;
-  var newslist;
+  var newsList;
 
   List<CategoryModel> categories = new List<CategoryModel>();
 
@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
   void getNews() async {
     News news = News();
     await news.getNews();
-    newslist = news.news;
+    newsList = news.news;
     setState(() {
       _loading = false;
     });
@@ -39,7 +39,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return newsList == null ? CircularProgressIndicator()
+    : Scaffold(
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -74,16 +75,16 @@ class _HomeState extends State<Home> {
             height: 610,
             margin: EdgeInsets.only(top: 16),
             child: ListView.builder(
-                itemCount: newslist.length,
+                itemCount: newsList.length,
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
                 itemBuilder: (context, index) {
                   return NewsTile(
-                    imgUrl: newslist[index].urlToImage ?? "",
-                    title: newslist[index].title ?? "",
-                    desc: newslist[index].description ?? "",
-                    content: newslist[index].content ?? "",
-                    posturl: newslist[index].articleUrl ?? "",
+                    imgUrl: newsList[index].urlToImage ?? "",
+                    title: newsList[index].title ?? "",
+                    desc: newsList[index].description ?? "",
+                    content: newsList[index].content ?? "",
+                    posturl: newsList[index].articleUrl ?? "",
                   );
                 }),
           )
