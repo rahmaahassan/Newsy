@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutternews/helper/news.dart';
 import 'package:flutternews/helper/widgets.dart';
+import 'package:flutternews/helper/news.dart';
+
+
 class CategoryNews extends StatefulWidget {
 
   final String newsCategory;
@@ -12,7 +14,9 @@ class CategoryNews extends StatefulWidget {
 }
 
 class _CategoryNewsState extends State<CategoryNews> {
-  var newslist;
+
+
+  var newsList;
   bool _loading = true;
 
   @override
@@ -24,7 +28,7 @@ class _CategoryNewsState extends State<CategoryNews> {
   void getNews() async {
     NewsForCategories news = NewsForCategories();
     await news.getNewsForCategory(widget.newsCategory);
-    newslist = news.news;
+    newsList = news.news;
     setState(() {
       _loading = false;
     });
@@ -34,20 +38,8 @@ class _CategoryNewsState extends State<CategoryNews> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Wold',
-              style:
-              TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
-            ),
-            Text(
-              'News',
-              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w600),
-            )
-          ],
-        ),
+        title: Text(widget.newsCategory,
+            style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600)),
         actions: <Widget>[
           Opacity(
             opacity: 0,
@@ -66,16 +58,16 @@ class _CategoryNewsState extends State<CategoryNews> {
           child: Container(
             margin: EdgeInsets.only(top: 16),
             child: ListView.builder(
-                itemCount: newslist.length,
+                itemCount: newsList.length,
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
                 itemBuilder: (context, index) {
                   return NewsTile(
-                    imgUrl: newslist[index].urlToImage ?? "",
-                    title: newslist[index].title ?? "",
-                    desc: newslist[index].description ?? "",
-                    content: newslist[index].content ?? "",
-                    posturl: newslist[index].articleUrl ?? "",
+                    imgUrl: newsList[index].urlToImage ?? "",
+                    title: newsList[index].title ?? "",
+                    desc: newsList[index].description ?? "",
+                    content: newsList[index].content ?? "",
+                    posturl: newsList[index].articleUrl ?? "",
                   );
                 }),
           ),
