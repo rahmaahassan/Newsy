@@ -39,7 +39,10 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return newsList == null ? CircularProgressIndicator()
+    return newsList == null ? CircularProgressIndicator(
+      backgroundColor: Colors.white,
+      strokeWidth: 4.0,
+    )
     : Scaffold(
       appBar: AppBar(
         title: Row(
