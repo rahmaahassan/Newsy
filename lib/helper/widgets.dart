@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutternews/views/article_view.dart';
 
-Widget MyappBar(){
+Widget MyAppbar(){
   return AppBar(
     title: Row(
       mainAxisAlignment: MainAxisAlignment.center,

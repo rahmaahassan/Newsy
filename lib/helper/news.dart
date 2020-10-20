@@ -1,13 +1,45 @@
 import 'dart:convert';
 
 import 'package:flutternews/models/artical_model.dart';
+import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 
 class News {
   List<Article> news = [];
 
+  Future<String> getCountryCode() async {
+
+    String countryCode;
+    LocationData myLocation;
+    String error;
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    Location location = Location();
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return false;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+
+        return false;
+      }
+      myLocation = await location.getLocation();
+    }
+
+    return countryCode;
+  }
+  
   Future<void> getNews() async {
-    String url = "http://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=3994cb11a9044708948ed065b25c2764";
+    String url = "http://newsapi.org/v2/top-headlines?country=${countryCode}&category=business&apiKey=3994cb11a9044708948ed065b25c2764";
 
     var response = await http.get(url);
 
@@ -43,7 +75,7 @@ class NewsForCategories {
   Future<void> getNewsForCategory(String category) async{
 
     /*String url = "http://newsapi.org/v2/everything?q=$category&apiKey=${apiKey}";*/
-    String url = "http://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=3994cb11a9044708948ed065b25c2764";
+    String url = "http://newsapi.org/v2/top-headlines?country=eg&category=business&apiKey=3994cb11a9044708948ed065b25c2764";
 
     var response = await http.get(url);
 

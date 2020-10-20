@@ -16,6 +16,8 @@ class _HomeState extends State<Home> {
   bool _loading = true;
   var newsList;
 
+  
+
   List<CategoryModel> categories = new List<CategoryModel>();
 
   @override
@@ -39,17 +41,13 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return newsList == null ? CircularProgressIndicator(
-      backgroundColor: Colors.white,
-      strokeWidth: 4.0,
-    )
-    : Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('World', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),),
-            Text('News', style: TextStyle(
+            const Text('World', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),),
+            const Text('News', style: TextStyle(
               color: Colors.blue, fontWeight: FontWeight.w600
             ),)
           ],
@@ -57,7 +55,10 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.transparent,
         elevation: 0.0,
       ),
-      body: Column(
+      body: newsList == null ? Center( child: CircularProgressIndicator(
+      backgroundColor: Colors.white,
+      strokeWidth: 3.0,),)
+      : Column(
         children: <Widget>[
           Container(
             height: 70,
