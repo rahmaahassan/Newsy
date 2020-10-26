@@ -2,16 +2,15 @@ import 'dart:convert';
 
 import 'package:flutternews/models/artical_model.dart';
 import 'package:location/location.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:http/http.dart' as http;
 
 class News {
   List<Article> news = [];
 
-  Future<String> getCountryCode() async {
-
+  Future<String> getLocation() async {
     String countryCode;
     LocationData myLocation;
-    String error;
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
 
@@ -21,7 +20,7 @@ class News {
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
       if (!_serviceEnabled) {
-        return false;
+        return 'us';
       }
     }
 
@@ -29,17 +28,33 @@ class News {
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
-
-        return false;
+        return 'us';
       }
       myLocation = await location.getLocation();
-    }
 
+      
+    }
+    final coordinates = Coordinates(myLocation.latitude, myLocation.longitude);
+
+    List<Address> addresses =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+
+    var first = addresses.first;
+
+    countryCode = first.countryCode;
+
+    print(countryCode);
+    print(myLocation.latitude.toString() +
+          ", " +
+          myLocation.longitude.toString());
     return countryCode;
   }
-  
+
   Future<void> getNews() async {
-    String url = "http://newsapi.org/v2/top-headlines?country=${countryCode}&category=business&apiKey=3994cb11a9044708948ed065b25c2764";
+    //String countryCode;
+
+    String url =
+        "http://newsapi.org/v2/top-headlines?country=eg&category=business&apiKey=3994cb11a9044708948ed065b25c2764";
 
     var response = await http.get(url);
 
@@ -47,7 +62,6 @@ class News {
 
     if (jsonData['status'] == "ok") {
       jsonData["articles"].forEach((element) {
-
         if (element['urlToImage'] != null && element['description'] != null) {
           Article article = Article(
             title: element['title'],
@@ -63,28 +77,25 @@ class News {
       });
     }
   }
-
-
 }
 
-
 class NewsForCategories {
+  List<Article> news = [];
 
-  List<Article> news  = [];
-
-  Future<void> getNewsForCategory(String category) async{
-
+  Future<void> getNewsForCategory(String category) async {
+    //String countryCode;
+    
     /*String url = "http://newsapi.org/v2/everything?q=$category&apiKey=${apiKey}";*/
-    String url = "http://newsapi.org/v2/top-headlines?country=eg&category=business&apiKey=3994cb11a9044708948ed065b25c2764";
+    String url =
+        "http://newsapi.org/v2/top-headlines?country=eg&category=business&apiKey=3994cb11a9044708948ed065b25c2764";
 
     var response = await http.get(url);
 
     var jsonData = jsonDecode(response.body);
 
-    if(jsonData['status'] == "ok"){
-      jsonData["articles"].forEach((element){
-
-        if(element['urlToImage'] != null && element['description'] != null){
+    if (jsonData['status'] == "ok") {
+      jsonData["articles"].forEach((element) {
+        if (element['urlToImage'] != null && element['description'] != null) {
           Article article = Article(
             title: element['title'],
             author: element['author'],
@@ -96,12 +107,7 @@ class NewsForCategories {
           );
           news.add(article);
         }
-
       });
     }
-
-
   }
-  }
-
-
+}
