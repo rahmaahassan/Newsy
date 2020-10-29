@@ -30,31 +30,33 @@ class News {
       if (_permissionGranted != PermissionStatus.granted) {
         return 'us';
       }
-      myLocation = await location.getLocation();
-
       
     }
+    myLocation = await location.getLocation();
+    print(myLocation.latitude.toString() +
+          ", " +
+          myLocation.longitude.toString());
+
     final coordinates = Coordinates(myLocation.latitude, myLocation.longitude);
 
     List<Address> addresses =
         await Geocoder.local.findAddressesFromCoordinates(coordinates);
 
-    var first = addresses.first;
+    Address first = addresses.first;
 
     countryCode = first.countryCode;
 
     print(countryCode);
-    print(myLocation.latitude.toString() +
-          ", " +
-          myLocation.longitude.toString());
+    
     return countryCode;
   }
 
   Future<void> getNews() async {
-    //String countryCode;
+    getLocation();
+    String countryCode;
 
     String url =
-        "http://newsapi.org/v2/top-headlines?country=eg&category=business&apiKey=3994cb11a9044708948ed065b25c2764";
+        "http://newsapi.org/v2/top-headlines?country=$countryCode&category=business&apiKey=3994cb11a9044708948ed065b25c2764";
 
     var response = await http.get(url);
 

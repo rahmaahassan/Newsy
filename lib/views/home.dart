@@ -29,6 +29,8 @@ class _HomeState extends State<Home> {
   Future<void> getNews() async {
     News news = News();
     await news.getNews();
+    NewsForCategories newscat = NewsForCategories();
+    await newscat.getNewsForCategory(newsList);
     newsList = news.news;
     setState(() {
       isLoading = false;
