@@ -1,6 +1,6 @@
 # flutternews
 
-A new Flutter application.
+A News App By Flutter.
 
 ## Getting Started
 
